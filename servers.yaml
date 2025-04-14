@@ -1,0 +1,23 @@
+servers:
+ - name: "Fetch content for URLs and download as markdown, json, html, etc"
+   command: "python"
+   args: ["-m", "mcp_server_fetch"]
+ - name: "Search AWS docs"
+   command: "uvx"
+   args: ["awslabs.aws-documentation-mcp-server@latest"]
+   env:
+     FASTMCP_LOG_LEVEL: ERROR
+ - name: "Filesystem server"
+   command: "npx"
+   args: ["-y", "@modelcontextprotocol/server-filesystem", "."]
+ - name: "Git tools"
+   command: "uvx"
+   args: ["mcp-server-git"]
+ - name: "Github tools"
+   command: "docker"
+   args: ["run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "ghcr.io/github/github-mcp-server"]
+   env:
+     GITHUB_PERSONAL_ACCESS_TOKEN: "$GITHUB_PAT"
+ - name: "Puppeteer"
+   command: "docker"
+   args: ["run", "-i", "--rm", "--init", "-e", "DOCKER_CONTAINER=true", "mcp/puppeteer"]

@@ -1,0 +1,10 @@
+# system
+pyyaml
+
+# base openai agents repo
+# https://github.com/openai/openai-agents-python
+openai-agents
+
+# fetch server
+# https://github.com/zcaceres/fetch-mcp
+mcp_server_fetch
