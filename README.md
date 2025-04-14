@@ -1,8 +1,6 @@
 # Project Overview
 
-This project is designed to facilitate the operation and management of various Multi-Channel Protocol (MCP) servers, allowing seamless communication and interaction with web-based tools and interfaces. At its core, `agent.py` provides a framework for running these servers, handling inputs, and executing tasks in a coordinated manner, driven by user prompts.
-
-# Installation Guide
+MCP servers + OpenAI agents.
 
 ## Setting up the Environment
 
@@ -14,26 +12,36 @@ This project is designed to facilitate the operation and management of various M
    - The script creates a virtual environment and installs all required Python packages from `requirements.txt`.
 
 2. **Install Project Dependencies**:
-   - Ensure you have the necessary external tools and services for specific MCP servers:
+   - Ensure you have the necessary external tools and services for the MCP servers you intend to run:
      - **Lynx**: Required for the `lynx` server, which interfaces with the Lynx terminal web search tool.
      - **Docker**: Required for the `puppeteer` and `github` servers, enabling Chrome control and GitHub interactions, respectively.
      - **Node.js**: Required for the `fs` server, using the `npx` command.
+
 
 # Usage Guide
 
 ## Running `agent.py`
 
-The primary script, `agent.py`, can be used to run and manage MCP servers based on a provided YAML configuration file. It supports custom prompts and server selection, along with a debug mode for developmental purposes.
-
 ### Basic Execution
 
-- To execute all configured servers with a custom input prompt:
+- You can run the agent using all the servers you have configured in `servers.yaml` like this
+
   ```bash
-  python agent.py --servers <server1> <server2> ... <serverN>
+  python agent.py
   ```
 
+- You can choose which servers the agent will have access to with:
+
+  ```bash
+  # gives agent access to file system (for local file browsing) and lynx (for websearch)
+  python agent.py --servers fs lynx
+  ```
+
+  In my experience this results in better performance since the agent is less likely to pick the wrong tool
+
 - **Debug Mode**:
-  - Use the `--debug` flag to initialize servers without executing the agent.
+
+  - Use the `--debug` flag to initialize servers without executing the agent. This is useful if you want to make sure the servers are set up correctly
     ```bash
     python agent.py --debug
     ```
@@ -41,9 +49,21 @@ The primary script, `agent.py`, can be used to run and manage MCP servers based 
 ### Configuration
 
 The servers are configured in `servers.yaml`, where each server entry includes:
+
 - **Name**: Identifier for the server.
 - **Description**: Brief description of the server's functionality.
 - **Command & Arguments**: Command-line instructions to start the server.
 - **Environment Variables**: Any additional environment configurations needed.
 
-This setup enables the dynamic management of servers tailored to specific tasks, ranging from web content fetching to filesystem operations and beyond.
+You'll typically find these in github repos for MCP servers
+
+### Roll your own
+You can roll your own MCP server in the `mcp-servers` directory
+
+# What do I use this for?
+## Link finding
+If I am trying to figure out how to do something (like setting up QEMU) I will often use `agent.py` to do the initial research for me
+
+```bash
+"find links relevant to QEMU setup on ubuntu" | python agent.py --servers lynx
+```
