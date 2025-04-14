@@ -1,23 +1,33 @@
 servers:
- - name: "Fetch content for URLs and download as markdown, json, html, etc"
+ - name: "fetch-web-content"
+   description: "Fetch content for URLs and download as markdown, json, html, etc"
    command: "python"
    args: ["-m", "mcp_server_fetch"]
- - name: "Search AWS docs"
+ - name: "aws-doc-search"
+   description: "Search AWS docs"
    command: "uvx"
    args: ["awslabs.aws-documentation-mcp-server@latest"]
    env:
      FASTMCP_LOG_LEVEL: ERROR
- - name: "Filesystem server"
+ - name: "fs"
+   description: "Filesystem server"
    command: "npx"
    args: ["-y", "@modelcontextprotocol/server-filesystem", "."]
- - name: "Git tools"
+ - name: "git"
+   description: "Git tools"
    command: "uvx"
    args: ["mcp-server-git"]
- - name: "Github tools"
+ - name: "github"
+   description: "MCP server for interacting with Github"
    command: "docker"
    args: ["run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "ghcr.io/github/github-mcp-server"]
    env:
      GITHUB_PERSONAL_ACCESS_TOKEN: "$GITHUB_PAT"
- - name: "Puppeteer"
+ - name: puppeteer
+   description: "Puppeteer MCP server for controlling Chrome"
    command: "docker"
    args: ["run", "-i", "--rm", "--init", "-e", "DOCKER_CONTAINER=true", "mcp/puppeteer"]
+ - name: lynx
+   description: "Interface to lynx (terminal web search tool)"
+   command: "python"
+   args: ["mcp-servers/lynx.py"]

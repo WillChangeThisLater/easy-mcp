@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+import logging
 import os
 import sys
 import yaml
@@ -8,6 +9,11 @@ from contextlib import AsyncExitStack
 from agents import Agent, Runner, gen_trace_id, trace
 from agents.mcp import MCPServer, MCPServerStdio
 
+logger = logging.getLogger(__name__)
+
+def get_available_server_names(yaml_file):
+    config = load_servers_config(yaml_file)
+    return [server['name'] for server in config]
 
 def load_servers_config(yaml_file):
     with open(yaml_file, "r") as file:
@@ -25,10 +31,17 @@ async def run(mcp_servers: list[MCPServer], prompt: str):
     result = await Runner.run(starting_agent=agent, input=prompt, max_turns=50)
     print(result.final_output)
 
-def create_servers(servers_config) -> list[MCPServerStdio]:
+def create_servers(servers_config, selected_servers: list[str] = None) -> list[MCPServerStdio]:
     server_instances = []
+    if selected_servers:
+        logger.info(f"only starting up servers specified in {selected_servers=}")
+
     for server_config in servers_config:
         name = server_config["name"]
+        if selected_servers and name not in selected_servers:
+            logger.warning(f"{name} not in {selected_servers} - skipping")
+            continue
+
         command = server_config["command"]
         args = server_config["args"]
         env = server_config.get("env", {})
@@ -52,11 +65,15 @@ def create_servers(servers_config) -> list[MCPServerStdio]:
             }
         )
         server_instances.append(server_instance)
+
+    if not server_instances:
+        raise ValueError(f"No servers found ({selected_servers=})")
+
     return server_instances
 
-async def main(prompt: str = None, debug: bool = False):
+async def main(prompt: str = None, selected_servers: list[str] = None, debug: bool = False):
     server_config = load_servers_config('servers.yaml')
-    mcp_servers = create_servers(server_config)
+    mcp_servers = create_servers(server_config, selected_servers)
 
     async with AsyncExitStack() as stack:
         for server in mcp_servers:
@@ -71,8 +88,11 @@ async def main(prompt: str = None, debug: bool = False):
                 await run(mcp_servers, prompt=prompt)
 
 if __name__ == "__main__":
+    available_servers = get_available_server_names('servers.yaml')
+
     parser = argparse.ArgumentParser(description="Run MCP Servers with options for debug and custom prompt.")
     parser.add_argument('--debug', action='store_true', help="Run the servers in debug mode without invoking the agent.")
+    parser.add_argument('--servers', nargs='*', choices=available_servers, help="Specify server names to run. If not specified, all servers are run.")
 
     args = parser.parse_args()
 
@@ -82,4 +102,4 @@ if __name__ == "__main__":
     else:
         prompt = None
 
-    asyncio.run(main(prompt=prompt, debug=args.debug))
+    asyncio.run(main(prompt=prompt, selected_servers=args.servers, debug=args.debug))
