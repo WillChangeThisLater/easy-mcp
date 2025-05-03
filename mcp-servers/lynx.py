@@ -42,7 +42,8 @@ def duckduckgo_search(query: str) -> str:
     return _duckduckgo_search(query)
 
 if __name__ == "__main__":
-    #result = _duckduckgo_search("what was the result of the eagles chief game in 2025? &&&")
+    #result = _duckduckgo_search("nfl scores")
+    #result = _duckduckgo_search("AWS bedrock reverse image search project examples")
     #print(result)
     #url = "https://en.wikipedia.org/wiki/George_Washington%27s_crossing_of_the_Delaware_River"
     #print(_view_webpage(url))

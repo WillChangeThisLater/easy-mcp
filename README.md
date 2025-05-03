@@ -67,3 +67,10 @@ If I am trying to figure out how to do something (like setting up QEMU) I will o
 ```bash
 "find links relevant to QEMU setup on ubuntu" | python agent.py --servers lynx
 ```
+
+### MCP notes...
+#### High level
+Host: Programs (Desktop, IDE, AI tool) that wants to use MCP
+Client: Client that maintains 1:1 connection with servers
+Server: Server exposing MCP capabilities
+

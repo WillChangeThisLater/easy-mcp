@@ -1,5 +1,9 @@
 # system
 pyyaml
+aiohttp
+
+# MCP client
+modelcontextprotocol
 
 # base openai agents repo
 # https://github.com/openai/openai-agents-python
