@@ -17,16 +17,17 @@ servers:
    description: "Git tools"
    command: "uvx"
    args: ["mcp-server-git"]
- - name: "github"
-   description: "MCP server for interacting with Github"
-   command: "docker"
-   args: ["run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "ghcr.io/github/github-mcp-server"]
-   env:
-     GITHUB_PERSONAL_ACCESS_TOKEN: "$GITHUB_PAT"
- - name: puppeteer
-   description: "Puppeteer MCP server for controlling Chrome"
-   command: "docker"
-   args: ["run", "-i", "--rm", "--init", "-e", "DOCKER_CONTAINER=true", "mcp/puppeteer"]
+  # docker isn't working
+  #- name: "github"
+  #  description: "MCP server for interacting with Github"
+  #  command: "docker"
+  #  args: ["run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "ghcr.io/github/github-mcp-server"]
+  #  env:
+  #    GITHUB_PERSONAL_ACCESS_TOKEN: "$GITHUB_PAT"
+  #- name: puppeteer
+  #  description: "Puppeteer MCP server for controlling Chrome"
+  #  command: "docker"
+  #  args: ["run", "-i", "--rm", "--init", "-e", "DOCKER_CONTAINER=true", "mcp/puppeteer"]
  - name: lynx
    description: "Interface to lynx (terminal web search tool)"
    command: "python"

@@ -1,3 +1,12 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.9"
+# dependencies = [
+#   "openai-agents",
+#   "pyyaml",
+#   "mcp-server-fetch"
+# ]
+# ///
 import argparse
 import asyncio
 import logging
