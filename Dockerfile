@@ -25,26 +25,28 @@ RUN n install latest && n latest
 # hash -r  (for bash, zsh, ash, dash, and ksh)
 RUN hash -r
 
-# Install python
-RUN add-apt-repository ppa:deadsnakes/ppa
-RUN apt install python3.13 full
-
 # Install uv
 # See: https://docs.astral.sh/uv/guides/integration/docker/#installing-uv
 ADD https://astral.sh/uv/install.sh /uv-installer.sh
 RUN sh /uv-installer.sh && rm /uv-installer.sh
 ENV PATH="/root/.local/bin/:$PATH"
 
-# Copy over runner file
-COPY runner.py .
-
-# Copy over configured servers
-COPY servers.yaml .
 
 # Install system requirements
 COPY requirements.txt .
 RUN uv pip install --system -r requirements.txt --no-cache-dir
 
+# Lynx server needs lynx text client
+RUN apt install lynx -y
+
+# Enable vim mode
+RUN echo 'set -o vi' >> /etc/bash.bashrc
+
+# Copy over relevant things
+COPY agent.py .
+COPY servers.yaml .
+COPY mcp-servers/lynx.py mcp-servers/lynx.py
+
 # Run on debug mode
 # This will load up everything the servers need, but shouldn't actually run anything
-RUN python runner.py --debug
+RUN python agent.py

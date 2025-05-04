@@ -29,6 +29,6 @@ servers:
   #  command: "docker"
   #  args: ["run", "-i", "--rm", "--init", "-e", "DOCKER_CONTAINER=true", "mcp/puppeteer"]
  - name: lynx
-   description: "Interface to lynx (terminal web search tool)"
+   description: "Interface to lynx (terminal web search tool). This does not play well with javascript"
    command: "python"
-   args: ["mcp-servers/lynx.py"]
+   args: ["/home/arch/agents/easy-mcp/mcp-servers/lynx.py"]

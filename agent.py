@@ -43,7 +43,7 @@ async def run(mcp_servers: list[MCPServer], prompt: str):
 def create_servers(servers_config, selected_servers: list[str] = None) -> list[MCPServerStdio]:
     server_instances = []
     if selected_servers:
-        logger.info(f"only starting up servers specified in {selected_servers=}")
+        logger.info(f"Only starting up servers specified in {selected_servers=}")
 
     for server_config in servers_config:
         name = server_config["name"]
@@ -80,8 +80,9 @@ def create_servers(servers_config, selected_servers: list[str] = None) -> list[M
 
     return server_instances
 
-async def main(prompt: str = None, selected_servers: list[str] = None, debug: bool = False):
-    server_config = load_servers_config('servers.yaml')
+async def main(prompt: str = None, selected_servers: list[str] = None, debug: bool = False, config_path: str = ""):
+    config_path = config_path if config_path else "servers.yaml"
+    server_config = load_servers_config(config_path)
     mcp_servers = create_servers(server_config, selected_servers)
 
     async with AsyncExitStack() as stack:
@@ -97,7 +98,8 @@ async def main(prompt: str = None, selected_servers: list[str] = None, debug: bo
                 await run(mcp_servers, prompt=prompt)
 
 if __name__ == "__main__":
-    available_servers = get_available_server_names('servers.yaml')
+    config_path = "/home/arch/agents/easy-mcp/servers.yaml"
+    available_servers = get_available_server_names(config_path)
 
     parser = argparse.ArgumentParser(description="Run MCP Servers with options for debug and custom prompt.")
     parser.add_argument('--debug', action='store_true', help="Run the servers in debug mode without invoking the agent.")
@@ -111,4 +113,4 @@ if __name__ == "__main__":
     else:
         prompt = None
 
-    asyncio.run(main(prompt=prompt, selected_servers=args.servers, debug=args.debug))
+    asyncio.run(main(prompt=prompt, selected_servers=args.servers, debug=args.debug, config_path=config_path))
